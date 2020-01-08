@@ -1,0 +1,36 @@
+version: "3.2"
+services:
+  backend:
+    build: ./jeong_backend
+    volumes:
+      - ./jeong_backend:/app/jeong_backend
+    expose:
+      - "8080"
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    command: python3 manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+  frontend:
+    build: ./jeong_frontend
+    volumes:
+      - ./jeong_frontend:/app
+      # One-way volume to use node_modules from inside image
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    command: npm start
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

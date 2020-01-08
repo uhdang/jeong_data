@@ -1,0 +1,41 @@
+#!/usr/bin/env groovy
+
+
+pipeline {
+
+    agent any
+
+    environment {
+        PATH = "$PATH:/usr/local/bin/docker-compose"
+    }
+
+    stages {
+        stage('Cloning Git') {
+            steps {
+                git 'https://github.com/uhdang/jeong.git'
+                sh 'docker-compose --version'
+            }
+        }
+        stage('Build image') {
+            steps {
+                script {
+                    echo 'Building..for Two'
+                    sh 'docker-compose up --build'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploy..'
+            }
+        }
+
+    }
+}
+
+
